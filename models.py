@@ -1,40 +1,52 @@
-from peewee import *
+from sqlalchemy import Column, Integer, String, ForeignKey, Float
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from database import Base
 
-db = SqliteDatabase('bhaji.db')
+from sqlalchemy.orm import Session, declarative_base
+Base = declarative_base()
 
-class User(Model):
-    name = CharField()
-    class Meta:
-        database = db
+class User(Base):
+    __tablename__ = "user"
 
-class Session(Model):
-    id = UUIDField(primary_key=True)
-    user = ForeignKeyField(User, backref='sessions')
+    id: Mapped[int] =  mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String)
+    type: Mapped[str]
 
-    class Meta:
-        database = db
+    __mapper_args__ = {
+        "polymorphic_identity": "user",
+        "polymorphic_on": "type"
+    }
 
-class Partner(Model):
-    user = ForeignKeyField(User, backref='partner')
-    class Meta:
-        database = db
+class Partner(User):
+    __tablename__ = "partner"
+    id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
 
-class Cart(Model):
-    partner = ForeignKeyField(Partner, backref='cart')
+    cart = relationship("Cart", uselist=False, back_populates="partner")
+    __mapper_args__ = {
+        "polymorphic_identity": "partner"
+    }
 
-    class Meta:
-        database = db
+class Vegetable(Base):
+    __tablename__ = "vegetable"
 
-class Vegetable(Model):
-    name = CharField()
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String)
+
+class Cart(Base):
+    __tablename__ = "cart"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    partner_id =  mapped_column(Integer, ForeignKey("partner.id"))
+
+    partner = relationship("Partner", back_populates="cart")
+    items = relationship("Item", back_populates="cart") 
+
+class Item(Base):
+    __tablename__ = "item"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    price: Mapped[float] = mapped_column(Float)
+    vegetable_id: Mapped[int] = mapped_column(Integer, ForeignKey("vegetable.id"))
+    cart_id: Mapped[int] = mapped_column(Integer, ForeignKey("cart.id"))
     
-    class Meta:
-        database = db
-
-class Item(Model):
-    vegetable = ForeignKeyField(Vegetable)
-    cart = ForeignKeyField(Cart, backref='items')
-    price = FloatField()
-
-    class Meta:
-        database = db
+    cart = relationship("Cart", back_populates="items")
