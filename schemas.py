@@ -22,6 +22,10 @@ class ItemCreate(BaseModel):
     vegetableId: int
     price: float
 
+
+class UserCreate(BaseModel):
+    name: str
+    type: str
 class Cart(BaseModel):
     items: dict[int, Item]
 
