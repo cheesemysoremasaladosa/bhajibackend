@@ -37,8 +37,28 @@ def addItem(db: Session,part_id :int ,item: schemas.Item):
 
 def getAllItems(db:Session,partnerId: int):
     allitems = db.query(models.Partner).where(models.Partner.id==partnerId).one()
-    return {"items": {i.id: schemas.Item.model_validate(i).model_dump() for i in allitems.cart.items}}
+    # FIXME: error handling here
+    return {"items": [ schemas.Item.model_validate(i).model_dump() for i in allitems.cart.items]}
 
+def delItem(db: Session,partnerId: int,vegetable_id:int):
+    partner= db.query(models.Partner).where(models.Partner.id== partnerId).one()
+    # FIXME: error handling here
+    if not partner.cart:
+        return {
+            "Error":True,
+            "Status":"cart not found"
+        }
+    for i in range (len(partner.cart.items)): 
+        if partner.cart.items[i].vegetable_id == vegetable_id:
+            db.delete(partner.cart.items[i])
+            db.commit()
+            return getAllItems(db,partnerId)
+            
+
+    return getAllItems(db,partnerId)
+
+    
+    
 
 
 def addUser(db: Session,user : schemas.UserCreate):

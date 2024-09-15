@@ -14,7 +14,7 @@ class Item(BaseModel):
     model_config = ConfigDict(alias_generator=AliasGenerator(
         serialization_alias=to_camel
     ), from_attributes=True)
-    id: int
+    # id: int
     vegetable_id: int
     price: float
 
@@ -22,6 +22,8 @@ class ItemCreate(BaseModel):
     vegetableId: int
     price: float
 
+class ItemDelete(BaseModel):
+    vegetableId: int
 
 class UserCreate(BaseModel):
     name: str
