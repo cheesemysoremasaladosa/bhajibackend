@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float
+from sqlalchemy import Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from database import Base
+from .database import Base
 
-from sqlalchemy.orm import Session, declarative_base
+from sqlalchemy.orm import declarative_base
+
 Base = declarative_base()
 
 class User(Base):
@@ -12,10 +13,19 @@ class User(Base):
     name: Mapped[str] = mapped_column(String)
     type: Mapped[str]
 
+    sessions = relationship("UserSession", back_populates="user") 
     __mapper_args__ = {
         "polymorphic_identity": "user",
         "polymorphic_on": "type"
     }
+
+class UserSession(Base):
+    __tablename__ = "user_session"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
+
+    user = relationship("User", back_populates="sessions")
 
 class Partner(User):
     __tablename__ = "partner"

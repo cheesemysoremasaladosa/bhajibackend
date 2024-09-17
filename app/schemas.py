@@ -14,7 +14,7 @@ class Item(BaseModel):
     model_config = ConfigDict(alias_generator=AliasGenerator(
         serialization_alias=to_camel
     ), from_attributes=True)
-    # id: int
+    #id: int
     vegetable_id: int
     price: float
 
@@ -28,8 +28,9 @@ class ItemDelete(BaseModel):
 class UserCreate(BaseModel):
     name: str
     type: str
+
 class Cart(BaseModel):
-    items: dict[int, Item]
+    items: list[Item]
 
 
 if __name__ == '__main__':
