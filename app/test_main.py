@@ -16,7 +16,7 @@ DEV_PARTNER_ID = 1
 
 
 def test_cart():
-    #test cart ops get, put, delete
+    # test cart ops get, put, delete
 
     response = client.get(f"/cart/{DEV_PARTNER_ID}")
     assert response.status_code == status.HTTP_200_OK
@@ -24,7 +24,9 @@ def test_cart():
 
     item = schemas.ItemCreate(vegetableId=1, price=23.0).model_dump()
     response = client.put(
-        f"/cart/{DEV_PARTNER_ID}", json=item, headers={"SessionID": DEV_SESSION_ID},
+        f"/cart/{DEV_PARTNER_ID}",
+        json=item,
+        headers={"SessionID": DEV_SESSION_ID},
     )
     assert response.status_code == status.HTTP_200_OK
 
@@ -33,30 +35,44 @@ def test_cart():
     assert response.json() == {"items": [item]}
 
     item = schemas.ItemDelete(vegetableId=1).model_dump()
-    #TestClient doesn't support json payload for delete method, manually create a request
-    #response = client.delete(f"/cart/{DEV_PARTNER_ID}", json=item, headers={"SessionID":DEV_SESSION_ID})
-    response = client.request("DELETE", url=f"/cart/{DEV_PARTNER_ID}", json=item, headers={"SessionID": DEV_SESSION_ID})
+    # TestClient doesn't support json payload for delete method, manually create a request
+    # response = client.delete(f"/cart/{DEV_PARTNER_ID}", json=item, headers={"SessionID":DEV_SESSION_ID})
+    response = client.request(
+        "DELETE",
+        url=f"/cart/{DEV_PARTNER_ID}",
+        json=item,
+        headers={"SessionID": DEV_SESSION_ID},
+    )
     assert response.status_code == status.HTTP_200_OK
 
     response = client.get(f"/cart/{DEV_PARTNER_ID}")
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {"items": []}
 
+
 def test_cart_errors():
-    partner_id = 4 #wrong partner_id
+    partner_id = 4  # wrong partner_id
     response = client.get(f"/cart/{partner_id}")
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
 
 def test_cart_auth():
     item = schemas.ItemCreate(vegetableId=1, price=23.0).model_dump()
     WRONG_SESSION_ID = "3240123"
     response = client.put(
-        f"/cart/{DEV_PARTNER_ID}", json=item, headers={"SessionID": WRONG_SESSION_ID},
+        f"/cart/{DEV_PARTNER_ID}",
+        json=item,
+        headers={"SessionID": WRONG_SESSION_ID},
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     item = schemas.ItemDelete(vegetableId=1).model_dump()
-    #TestClient doesn't support json payload for delete method, manually create a request
-    #response = client.delete(f"/cart/{DEV_PARTNER_ID}", json=item, headers={"SessionID":DEV_SESSION_ID})
-    response = client.request("DELETE", url=f"/cart/{DEV_PARTNER_ID}", json=item, headers={"SessionID": WRONG_SESSION_ID})
+    # TestClient doesn't support json payload for delete method, manually create a request
+    # response = client.delete(f"/cart/{DEV_PARTNER_ID}", json=item, headers={"SessionID":DEV_SESSION_ID})
+    response = client.request(
+        "DELETE",
+        url=f"/cart/{DEV_PARTNER_ID}",
+        json=item,
+        headers={"SessionID": WRONG_SESSION_ID},
+    )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED

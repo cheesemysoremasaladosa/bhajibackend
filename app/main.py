@@ -37,7 +37,10 @@ def addItem(
 
 @app.delete("/cart/{partner_id}")
 def delItem(
-    partner_id: int, sessionId: Annotated[str, Header()], vegetable: schemas.ItemDelete, db: Session = Depends(get_db)
+    partner_id: int,
+    sessionId: Annotated[str, Header()],
+    vegetable: schemas.ItemDelete,
+    db: Session = Depends(get_db),
 ):
     verifyUserAuth(db=db, user_id=partner_id, session_id=sessionId)
     return crud.delItem(db, partner_id, vegetable.vegetableId)
