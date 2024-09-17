@@ -22,6 +22,12 @@ def createCatalog(db: Session):
 
 
 def addItem(db: Session, part_id: int, item: schemas.Item) -> HTTPException:
+    existing_item = db.query(models.Item).where(models.Item.vegetable_id == item.vegetableId).one_or_none()
+    #if an item with the same vegetable_id already exists, just update the price
+    if existing_item:
+        existing_item.price = item.price
+        db.commit()
+        return
     Item = models.Item(vegetable_id=item.vegetableId, price=item.price)
     try:
         partner = db.query(models.Partner).filter(models.Partner.id == part_id).one()
