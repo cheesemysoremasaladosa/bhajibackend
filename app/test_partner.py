@@ -1,13 +1,13 @@
 from fastapi.testclient import TestClient
 from fastapi import status
 from .main import app
-from .utils import initDevDB, get_db
+from .utils import initDevPartnerDB, get_db
 from .crud import getCatalog
 from . import schemas
 
 client = TestClient(app)
 
-initDevDB()
+initDevPartnerDB()
 
 catalog = getCatalog(db=next(get_db()))["catalog"]
 

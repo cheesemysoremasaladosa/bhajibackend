@@ -18,7 +18,8 @@ def get_db():
         db.close()
 
 
-def initDevDB():
+def initDevPartnerDB(): 
+    #initialize the database for partner testing
     db = next(get_db())
     crud.createCatalog(db)
     dev_user_id = crud.createPartner(
@@ -28,6 +29,16 @@ def initDevDB():
     crud.createUserSession(db, session_id=dev_session_id, user_id=dev_user_id)
     print(f"DEV_SESSION_ID: {dev_session_id}\nDEV_USER_ID: {dev_user_id}")
 
+def initDevUserDB():
+    #initialize the database for user testing
+    db = next(get_db())
+    crud.createCatalog(db)
+    crud.createPartner(
+        db, partner=schemas.PartnerCreate(name="Ramesh")
+    )
+    crud.createPartner(
+        db, partner=schemas.PartnerCreate(name="Suresh")
+    )
 
 def verifyUserAuth(db: Session, user_id: int, session_id: str) -> HTTPException | None:
     try:

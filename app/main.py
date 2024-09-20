@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import Depends, FastAPI, Header
 from sqlalchemy.orm import Session
-from .utils import get_db, initDevDB, verifyUserAuth
+from .utils import get_db, initDevPartnerDB, verifyUserAuth
 from . import crud, models, schemas
 from .database import engine
 
@@ -10,7 +10,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-initDevDB()
+initDevPartnerDB()
 
 
 @app.get("/catalog")

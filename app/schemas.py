@@ -39,6 +39,12 @@ class UserCreate(BaseModel):
 class Cart(BaseModel):
     items: list[Item]
 
+class Partner(BaseModel):
+    id: int
+    name: str
+
+class PartnerList(BaseModel):
+    partners: list[Partner]
 
 if __name__ == "__main__":
     from sqlalchemy import create_engine
