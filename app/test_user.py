@@ -11,7 +11,7 @@ initDevUserDB()
 
 
 def test_partner_list():
-    response = client.get("/partners", params={"radius": 5})
+    response = client.get("/partners", params={"radius": 5, "lat": 10.0, "lon": 10.0})
     assert response.status_code == status.HTTP_200_OK
     partners_json = response.json()
     try:
