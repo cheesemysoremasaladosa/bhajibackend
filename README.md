@@ -21,7 +21,7 @@ The Backend for Bhajiwala Partner and Consumer
 
 ## Testing
 
-currently there's a single test `test_main.py` to run it:
+currently the test's are placed in the `app/` directory:
 
 ``
     pytest
