@@ -1,11 +1,37 @@
 # bhajibackend
 The Backend for Bhajiwala Partner and Consumer
 
-## API:
+## Setup
 
-### Cart Ops
-- `PUT /cart/<veggie_id>` : add vegetable to the partner's cart
+- clone the repo and cd
 
-- `DELETE /cart/<veggie_id>` : remove vegetable from the partner's cart
+    ``gh repo clone cheesemysoremasaladosa/bhajibackend && cd``
 
-- `GET /cart/<partner_id>`: list all items in the cart along with their price
+- create a virtual env
+
+    ``python3 -m virtualenv .env``
+
+- activate virtual env
+
+    ``source .env/bin/activate``
+
+- install package requirements
+
+    ``pip install -r requirements.txt``
+
+## Testing
+
+currently the test's are placed in the `app/` directory:
+
+``
+    pytest
+``
+
+## Running the server
+
+* `fastapi dev main.py` : for local dev
+
+* `fastapi dev main.py --host 0.0.0.0`: for use with apps
+
+## API docs
+`http://localhost:8000/redoc`
