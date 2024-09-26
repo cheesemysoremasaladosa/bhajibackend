@@ -49,7 +49,7 @@ def addItem(db: Session, part_id: int, item: schemas.ItemCreate) -> None | HTTPE
     db.commit()
 
 
-def getAllItems(db: Session, partnerId: int) -> dict[str, schemas.Cart] | HTTPException:
+def getAllItems(db: Session, partnerId: int) -> schemas.Cart | HTTPException:
     try:
         partner = db.get_one(models.Partner, partnerId)
     except exc.NoResultFound:
@@ -63,7 +63,7 @@ def getAllItems(db: Session, partnerId: int) -> dict[str, schemas.Cart] | HTTPEx
         .where(models.Item.cart_id == partner.cart.id)
         .all()
     ]
-    return {"items": items}
+    return schemas.Cart(items=items)
 
 
 def delItem(db: Session, partnerId: int, vegetable_id: int) -> HTTPException:
