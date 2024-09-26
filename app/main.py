@@ -9,23 +9,12 @@ from . import crud, geocrud, models, schemas
 from .database import engine
 import logging
 
-# client: redis.Redis = None
 log: logging.Logger = logging.getLogger("uvicorn.default")
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global client
     models.Base.metadata.create_all(bind=engine)
-    initDevPartnerDB()
-    client = redis.Redis()
-    # try:
-    #    await client.ping()
-    # except:
-    #    log.error("couldn't connect to REDIS server")
-    # FIXME: terminate the server if connecting to redis fails
     yield
-    await client.aclose()
 
 
 app = FastAPI(lifespan=lifespan)
