@@ -1,11 +1,11 @@
-from .database import SessionLocal
+from .database import SessionLocal, RedisConnectionPool
 from . import crud, schemas, models
 import random
 import uuid
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import exc
-
+import redis.asyncio as redis
 # REMOVE THIS IN PROD AND USE `secrets`
 random.seed(0)
 
@@ -17,6 +17,12 @@ def get_db():
     finally:
         db.close()
 
+async def get_geodb():
+    client = redis.Redis(connection_pool=RedisConnectionPool)
+    try:
+        yield client
+    finally:
+        await client.aclose()
 
 def initDevPartnerDB(): 
     #initialize the database for partner testing

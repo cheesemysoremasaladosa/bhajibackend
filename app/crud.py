@@ -21,7 +21,7 @@ def createCatalog(db: Session):
     db.commit()
 
 
-def addItem(db: Session, part_id: int, item: schemas.Item) -> HTTPException:
+def addItem(db: Session, part_id: int, item: schemas.ItemCreate) -> None | HTTPException:
     existing_item = (
         db.query(models.Item)
         .where(models.Item.vegetable_id == item.vegetableId)

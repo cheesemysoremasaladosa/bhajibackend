@@ -43,5 +43,15 @@ class Partner(BaseModel):
     id: int
     name: str
 
+class PartnerLocation(BaseModel):
+    partnerId: int
+    lat: float
+    lon: float
+
+class LocatedPartner(BaseModel):
+    partner: Partner
+    lat: float
+    lon: float
+
 class PartnerList(BaseModel):
-    partners: list[Partner]
+    partners: list[LocatedPartner]
