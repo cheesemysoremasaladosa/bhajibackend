@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine, StaticPool
 from sqlalchemy.orm import sessionmaker, declarative_base
 import redis.asyncio as redis
+from .config import settings
 
-SQLALCHEMY_DATABASE_URL = "sqlite://"
+SQLALCHEMY_DATABASE_URL = f"sqlite://{settings.db_path}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,

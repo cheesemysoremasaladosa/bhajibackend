@@ -7,6 +7,7 @@ import redis.asyncio as redis
 from .utils import get_db, get_geodb, initDevPartnerDB, verifyUserAuth
 from . import crud, geocrud, models, schemas
 from .database import engine
+from .config import settings
 import logging
 
 log: logging.Logger = logging.getLogger("uvicorn.default")
@@ -14,6 +15,7 @@ log: logging.Logger = logging.getLogger("uvicorn.default")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     models.Base.metadata.create_all(bind=engine)
+    initDevPartnerDB()
     yield
 
 
@@ -54,11 +56,24 @@ def delItem(
 
 
 @app.get("/partners")
-async def getPartners(radius: int, lat: float, lon: float, db: Session = Depends(get_db), geodb: redis.Redis = Depends(get_geodb)):
-    return await geocrud.getPartnersFromPos(geodb=geodb, radius=radius, lat=lat, lon=lon)
+async def getPartners(
+    radius: int,
+    lat: float,
+    lon: float,
+    db: Session = Depends(get_db),
+    geodb: redis.Redis = Depends(get_geodb),
+):
+    return await geocrud.getPartnersFromPos(
+        db=db, geodb=geodb, radius=radius, lat=lat, lon=lon
+    )
+
 
 @app.post("/partner/location")
 async def postLocation(
-    location: schemas.PartnerLocation, db: Session = Depends(get_db), geodb: redis.Redis = Depends(get_geodb)
+    location: schemas.PartnerLocation,
+    sessionId: Annotated[str, Header()],
+    db: Session = Depends(get_db),
+    geodb: redis.Redis = Depends(get_geodb),
 ):
+    #verifyUserAuth(db=db, user_id=location.partnerId, session_id=sessionId)
     await geocrud.addPartnerLocation(geodb=geodb, location=location)
