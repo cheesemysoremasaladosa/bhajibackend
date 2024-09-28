@@ -94,7 +94,7 @@ def createPartner(db: Session, partner: schemas.PartnerCreate) -> int:
 
 def getPartnerById(db: Session, partner_id: int)->schemas.Partner | HTTPException:
     db_partner = db.get(models.Partner, partner_id)
-    if not db_partner: raise HTTPException(404, "partner not found")
+    if not db_partner: raise HTTPException(404, f"partner_id: {partner_id} not found")
     return schemas.Partner.model_validate(db_partner)
 
 def createUserSession(db: Session, session_id: str, user_id: int):

@@ -1,11 +1,12 @@
-from .database import SessionLocal, RedisConnectionPool
-from . import crud, schemas, models
+from .database import SessionLocal
+from . import crud, schemas, models, geocrud
 import random
 import uuid
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy import exc
-import redis.asyncio as redis
+import redis
+from .config import settings
+
 # REMOVE THIS IN PROD AND USE `secrets`
 random.seed(0)
 
@@ -17,12 +18,12 @@ def get_db():
     finally:
         db.close()
 
-async def get_geodb():
-    client = redis.Redis(connection_pool=RedisConnectionPool)
+def get_geodb():
+    client = redis.Redis(host=settings.redis_host, port=settings.redis_port)
     try:
         yield client
     finally:
-        await client.aclose()
+        client.close()
 
 def initDevPartnerDB(): 
     #initialize the database for partner testing
@@ -38,13 +39,16 @@ def initDevPartnerDB():
 def initDevUserDB():
     #initialize the database for user testing
     db = next(get_db())
+    geodb = next(get_geodb())
     crud.createCatalog(db)
-    crud.createPartner(
+    ramesh_id = crud.createPartner(
         db, partner=schemas.PartnerCreate(name="Ramesh")
     )
-    crud.createPartner(
+    geocrud.addPartnerLocation(geodb=geodb, location=schemas.PartnerLocation(partnerId=ramesh_id, lat=10.10, lon=10.0))
+    suresh_id = crud.createPartner(
         db, partner=schemas.PartnerCreate(name="Suresh")
     )
+    geocrud.addPartnerLocation(geodb=geodb, location=schemas.PartnerLocation(partnerId=suresh_id, lat=11.10, lon=11.0))
 
 def verifyUserAuth(db: Session, user_id: int, session_id: str) -> HTTPException | None:
     try:

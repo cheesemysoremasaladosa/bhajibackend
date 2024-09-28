@@ -3,18 +3,18 @@ from fastapi import HTTPException
 from . import schemas, crud, models
 from typing import *
 
-async def addPartnerLocation(
+def addPartnerLocation(
     geodb: redis.Redis, location: schemas.PartnerLocation
 ) -> None | HTTPException:
     # TODO: validate lat and lon
-    await geodb.geoadd("Partners", [location.lat, location.lon, location.partnerId])
+    geodb.geoadd("Partners", [location.lat, location.lon, location.partnerId])
 
 
-async def getPartnersFromPos(
+def getPartnersFromPos(
     db, geodb, radius: int, lat: float, lon: float
 ) -> schemas.PartnerLocation:
     # TODO: validate lat and lon
-    geovalues: List[Tuple[bytes, float, (float, float)]] = await geodb.geosearch(
+    geovalues: List[Tuple[bytes, float, (float, float)]] = geodb.geosearch(
         "Partners",
         radius=radius,
         latitude=lat,

@@ -1,7 +1,6 @@
 from pydantic import BaseModel, ConfigDict, AliasGenerator
 from pydantic.alias_generators import to_camel
-
-
+from pydantic_extra_types.coordinate import Latitude, Longitude
 class PartnerCreate(BaseModel):
     name: str
 
@@ -48,13 +47,13 @@ class Partner(BaseModel):
 
 class PartnerLocation(BaseModel):
     partnerId: int
-    lat: float
-    lon: float
+    lat: Latitude
+    lon: Longitude
 
 class LocatedPartner(BaseModel):
     partner: Partner
-    lat: float
-    lon: float
+    lat: Latitude
+    lon: Longitude
 
 class PartnerList(BaseModel):
     partners: list[LocatedPartner]

@@ -16,11 +16,15 @@ log: logging.Logger = logging.getLogger("uvicorn.default")
 async def lifespan(app: FastAPI):
     models.Base.metadata.create_all(bind=engine)
     initDevPartnerDB()
+    log.info(f'REDIS_HOST: {settings.redis_host} REDIS_PORT: {settings.redis_port}')
     yield
 
 
 app = FastAPI(lifespan=lifespan)
 
+@app.get("/")
+def home():
+    return "this is home"
 
 @app.get("/catalog")
 def get_catalog(db: Session = Depends(get_db)):
@@ -63,7 +67,7 @@ async def getPartners(
     db: Session = Depends(get_db),
     geodb: redis.Redis = Depends(get_geodb),
 ):
-    return await geocrud.getPartnersFromPos(
+    return geocrud.getPartnersFromPos(
         db=db, geodb=geodb, radius=radius, lat=lat, lon=lon
     )
 
@@ -76,4 +80,4 @@ async def postLocation(
     geodb: redis.Redis = Depends(get_geodb),
 ):
     #verifyUserAuth(db=db, user_id=location.partnerId, session_id=sessionId)
-    await geocrud.addPartnerLocation(geodb=geodb, location=location)
+    geocrud.addPartnerLocation(geodb=geodb, location=location)
