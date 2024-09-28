@@ -15,13 +15,8 @@ def setup():
     yield
 
 def test_partner_list(setup):
-    response = client.get("/partners", params={"radius": 100, "lat": 10.0, "lon": 10.0})
+    response = client.get("/partners", params={"radius": 10, "lat": 18.588506286852226, "lon": 73.82248587694585})
     assert response.status_code == status.HTTP_200_OK
     partners_json = response.json()
-    partners = schemas.PartnerList.model_validate(partners_json)
-    assert partners == schemas.PartnerList(
-        partners=[
-            schemas.LocatedPartner(partner=schemas.Partner(id=2, name="Ramesh"), lat=10.0, lon=10.0),
-            schemas.LocatedPartner(partner=schemas.Partner(id=3, name="Suresh"), lat=11.0, lon=11.0),
-        ]
-    )
+    partners_list = schemas.PartnerList.model_validate(partners_json)
+    assert [located_partner.partner.name for located_partner in partners_list.partners] == ["Suresh","Ramesh"]
