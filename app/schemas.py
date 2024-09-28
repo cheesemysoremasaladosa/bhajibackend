@@ -54,6 +54,7 @@ class LocatedPartner(BaseModel):
     partner: Partner
     lat: Latitude
     lon: Longitude
+    distance: float
 
 class PartnerList(BaseModel):
     partners: list[LocatedPartner]
