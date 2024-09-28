@@ -44,11 +44,11 @@ def initDevUserDB():
     ramesh_id = crud.createPartner(
         db, partner=schemas.PartnerCreate(name="Ramesh")
     )
-    geocrud.addPartnerLocation(geodb=geodb, location=schemas.PartnerLocation(partnerId=ramesh_id, lat=10.10, lon=10.0))
+    geocrud.addPartnerLocation(geodb=geodb, location=schemas.PartnerLocation(partnerId=ramesh_id, lat=18.58791783341944, lon=73.8279781974082))
     suresh_id = crud.createPartner(
         db, partner=schemas.PartnerCreate(name="Suresh")
     )
-    geocrud.addPartnerLocation(geodb=geodb, location=schemas.PartnerLocation(partnerId=suresh_id, lat=11.10, lon=11.0))
+    geocrud.addPartnerLocation(geodb=geodb, location=schemas.PartnerLocation(partnerId=suresh_id, lat=18.586205319964993, lon=73.81610851701967))
 
 def verifyUserAuth(db: Session, user_id: int, session_id: str) -> HTTPException | None:
     try:
