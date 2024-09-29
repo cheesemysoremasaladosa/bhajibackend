@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends, FastAPI, Header, HTTPException
 from sqlalchemy.orm import Session
 import redis.asyncio as redis
-from .utils import get_db, get_geodb, initDevPartnerDB, verifyUserAuth
+from .utils import get_db, get_geodb, initDevPartnerDB, verifyUserAuth,initDevUserDB
 from . import crud, geocrud, models, schemas
 from .database import engine
 from .config import settings
@@ -16,6 +16,7 @@ log: logging.Logger = logging.getLogger("uvicorn.default")
 async def lifespan(app: FastAPI):
     models.Base.metadata.create_all(bind=engine)
     initDevPartnerDB()
+    initDevUserDB()
     log.info(f'REDIS_HOST: {settings.redis_host} REDIS_PORT: {settings.redis_port}')
     yield
 

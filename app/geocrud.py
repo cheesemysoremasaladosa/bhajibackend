@@ -26,7 +26,7 @@ def getPartnersFromPos(
 
     partners = []
     for geovalue in geovalues:
-        partnerId, distance, (lat, lon) = geovalue
+        partnerId, distance, (lon, lat) = geovalue
         partnerId = int(partnerId)  # redis returns bytes object for key
         partner: schemas.Partner = crud.getPartnerById(db=db,partner_id=partnerId)
         partners.append(schemas.LocatedPartner(partner=partner, lat=lat, lon=lon, distance=distance))
