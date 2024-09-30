@@ -21,7 +21,7 @@ The Backend for Bhajiwala Partner and Consumer
 
 ## Testing
 
-currently the test's are placed in the `app/` directory:
+currently the tests are placed in the `/tests` directory:
 
 ``
     pytest
@@ -34,4 +34,4 @@ currently the test's are placed in the `app/` directory:
 * `fastapi dev main.py --host 0.0.0.0`: for use with apps
 
 ## API docs
-`http://localhost:8000/redoc`
+`http://localhost:8000/doc`
