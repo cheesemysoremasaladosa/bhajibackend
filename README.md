@@ -34,4 +34,4 @@ currently the tests are placed in the `/tests` directory:
 * `fastapi dev main.py --host 0.0.0.0`: for use with apps
 
 ## API docs
-`http://localhost:8000/doc`
+`http://localhost:8000/docs`
