@@ -29,9 +29,9 @@ currently the test's are placed in the `app/` directory:
 
 ## Running the server
 
-* `fastapi dev main.py` : for local dev
+* `fastapi dev app/main.py` : for local dev
 
-* `fastapi dev main.py --host 0.0.0.0`: for use with apps
+* `fastapi dev app/main.py --host 0.0.0.0`: for use with apps
 
 ## API docs
 `http://localhost:8000/redoc`
