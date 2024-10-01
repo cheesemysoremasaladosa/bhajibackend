@@ -61,7 +61,7 @@ def delItem(
 
 
 @app.get("/partners")
-async def getPartners(
+def getPartners(
     radius: int,
     lat: float,
     lon: float,
@@ -74,7 +74,7 @@ async def getPartners(
 
 
 @app.post("/partner/location")
-async def postLocation(
+def postLocation(
     location: schemas.PartnerLocation,
     sessionId: Annotated[str, Header()],
     db: Session = Depends(get_db),
