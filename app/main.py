@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 import logging.config
 from typing import Annotated
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 import redis.asyncio as redis
 from .utils import get_db, get_geodb, initDevPartnerDB, verifyUserAuth,initDevUserDB
@@ -22,6 +23,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def home():

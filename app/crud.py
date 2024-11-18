@@ -14,7 +14,7 @@ def getCatalog(db: Session) -> dict[str, dict[int, schemas.Vegetable]]:
 
 
 def createCatalog(db: Session):
-    VEGETABLES = ["Tomato", "Onion", "Ginger", "Spinach", "Garlic", "Chilli", "Lemon"]
+    VEGETABLES = ["Tomato","Onion", "Ginger", "Coriander", "Garlic", "Chilli", "Lemon"]
     for vegetableName in VEGETABLES:
         vegetable = models.Vegetable(name=vegetableName)
         db.add(vegetable)
