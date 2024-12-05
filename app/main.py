@@ -9,6 +9,7 @@ from .utils import get_db, get_geodb, initDevPartnerDB, verifyUserAuth,initDevUs
 from . import crud, geocrud, models, schemas
 from .database import engine
 from .config import settings
+from . import STATICDIR
 import logging
 
 log: logging.Logger = logging.getLogger("uvicorn.default")
@@ -23,7 +24,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=STATICDIR), name="static")
 
 @app.get("/")
 def home():
