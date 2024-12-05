@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, exc
 from fastapi import HTTPException, status
 from . import models, schemas
-
+from . import STATICDIR
 
 def getCatalog(db: Session) -> dict[str, dict[int, schemas.Vegetable]]:
     return {
@@ -14,7 +14,8 @@ def getCatalog(db: Session) -> dict[str, dict[int, schemas.Vegetable]]:
 
 
 def createCatalog(db: Session):
-    VEGETABLES = ["Tomato","Onion", "Ginger", "Coriander", "Garlic", "Chilli", "Lemon"]
+    from os import listdir
+    VEGETABLES= [f.split('.')[0] for f in listdir(STATICDIR)]
     for vegetableName in VEGETABLES:
         vegetable = models.Vegetable(name=vegetableName)
         db.add(vegetable)
