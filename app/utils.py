@@ -1,10 +1,11 @@
 from .database import SessionLocal
-from . import crud, schemas, models
+from . import crud, schemas, models, geocrud
 import random
 import uuid
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy import exc
+import redis
+from .config import settings
 
 # REMOVE THIS IN PROD AND USE `secrets`
 random.seed(0)
@@ -17,6 +18,12 @@ def get_db():
     finally:
         db.close()
 
+def get_geodb():
+    client = redis.Redis(host=settings.redis_host, port=settings.redis_port)
+    try:
+        yield client
+    finally:
+        client.close()
 
 def initDevPartnerDB(): 
     #initialize the database for partner testing
@@ -32,13 +39,16 @@ def initDevPartnerDB():
 def initDevUserDB():
     #initialize the database for user testing
     db = next(get_db())
+    geodb = next(get_geodb())
     crud.createCatalog(db)
-    crud.createPartner(
+    ramesh_id = crud.createPartner(
         db, partner=schemas.PartnerCreate(name="Ramesh")
     )
-    crud.createPartner(
+    geocrud.addPartnerLocation(geodb=geodb, location=schemas.PartnerLocation(partnerId=ramesh_id, lat=18.58791783341944, lon=73.8279781974082))
+    suresh_id = crud.createPartner(
         db, partner=schemas.PartnerCreate(name="Suresh")
     )
+    geocrud.addPartnerLocation(geodb=geodb, location=schemas.PartnerLocation(partnerId=suresh_id, lat=18.586205319964993, lon=73.81610851701967))
 
 def verifyUserAuth(db: Session, user_id: int, session_id: str) -> HTTPException | None:
     try:

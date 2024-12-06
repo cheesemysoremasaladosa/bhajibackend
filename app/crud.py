@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, exc
 from fastapi import HTTPException, status
 from . import models, schemas
-
+from . import STATICDIR
 
 def getCatalog(db: Session) -> dict[str, dict[int, schemas.Vegetable]]:
     return {
@@ -14,14 +14,15 @@ def getCatalog(db: Session) -> dict[str, dict[int, schemas.Vegetable]]:
 
 
 def createCatalog(db: Session):
-    VEGETABLES = ["Tomato", "Onion", "Ginger", "Spinach", "Garlic", "Chilli", "Lemon"]
+    from os import listdir
+    VEGETABLES= [f.split('.')[0] for f in listdir(STATICDIR)]
     for vegetableName in VEGETABLES:
         vegetable = models.Vegetable(name=vegetableName)
         db.add(vegetable)
     db.commit()
 
 
-def addItem(db: Session, part_id: int, item: schemas.Item) -> HTTPException:
+def addItem(db: Session, part_id: int, item: schemas.ItemCreate) -> None | HTTPException:
     existing_item = (
         db.query(models.Item)
         .where(models.Item.vegetable_id == item.vegetableId)
@@ -49,7 +50,7 @@ def addItem(db: Session, part_id: int, item: schemas.Item) -> HTTPException:
     db.commit()
 
 
-def getAllItems(db: Session, partnerId: int) -> dict[str, schemas.Cart] | HTTPException:
+def getAllItems(db: Session, partnerId: int) -> schemas.Cart | HTTPException:
     try:
         partner = db.get_one(models.Partner, partnerId)
     except exc.NoResultFound:
@@ -63,7 +64,7 @@ def getAllItems(db: Session, partnerId: int) -> dict[str, schemas.Cart] | HTTPEx
         .where(models.Item.cart_id == partner.cart.id)
         .all()
     ]
-    return {"items": items}
+    return schemas.Cart(items=items)
 
 
 def delItem(db: Session, partnerId: int, vegetable_id: int) -> HTTPException:
@@ -92,6 +93,10 @@ def createPartner(db: Session, partner: schemas.PartnerCreate) -> int:
     db.commit()
     return db_partner.id
 
+def getPartnerById(db: Session, partner_id: int)->schemas.Partner | HTTPException:
+    db_partner = db.get(models.Partner, partner_id)
+    if not db_partner: raise HTTPException(404, f"partner_id: {partner_id} not found")
+    return schemas.Partner.model_validate(db_partner)
 
 def createUserSession(db: Session, session_id: str, user_id: int):
     db_user = db.get(models.User, user_id)

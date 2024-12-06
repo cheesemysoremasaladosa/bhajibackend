@@ -1,0 +1,1 @@
+STATICDIR="static"
