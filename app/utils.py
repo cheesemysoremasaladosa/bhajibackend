@@ -25,10 +25,15 @@ def get_geodb():
     finally:
         client.close()
 
+def initDB():
+    db = next(get_db())
+    crud.createCatalog(db)
+    initDevUserDB()
+    initDevPartnerDB()
+
 def initDevPartnerDB(): 
     #initialize the database for partner testing
     db = next(get_db())
-    crud.createCatalog(db)
     dev_user_id = crud.createPartner(
         db, partner=schemas.PartnerCreate(name="DEV_PARTNER")
     )
@@ -40,7 +45,6 @@ def initDevUserDB():
     #initialize the database for user testing
     db = next(get_db())
     geodb = next(get_geodb())
-    crud.createCatalog(db)
     ramesh_id = crud.createPartner(
         db, partner=schemas.PartnerCreate(name="Ramesh")
     )
