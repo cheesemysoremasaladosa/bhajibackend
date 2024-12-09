@@ -28,8 +28,8 @@ def get_geodb():
 def initDB():
     db = next(get_db())
     crud.createCatalog(db)
-    initDevUserDB()
     initDevPartnerDB()
+    initDevUserDB()
 
 def initDevPartnerDB(): 
     #initialize the database for partner testing
